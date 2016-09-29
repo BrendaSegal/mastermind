@@ -1,4 +1,10 @@
 services:
-#    mastermind.example:
-#        class: MastermindBundle\Example
-#        arguments: ["@service_id", "plain_value", %parameter%]
+    mastermind.puzzle.manager:
+      class: MastermindBundle\Manager\PuzzleManager
+      arguments: 
+        entityManager: "@doctrine.orm.entity_manager"
+
+    mastermind.color.manager:
+      class: MastermindBundle\Manager\ColorManager
+      arguments: 
+        entityManager: "@doctrine.orm.entity_manager"
