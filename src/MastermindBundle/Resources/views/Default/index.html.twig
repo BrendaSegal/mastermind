@@ -1,5 +1,24 @@
-<p>Puzzle #{{ puzzle.puzzleCode }}</p>
-<div style='display:flex;width:300px;justify-content: space-between;background: gray;padding: 0 20px;height: 400px;border-radius: 5px'>
+<p>Puzzle #{{ puzzle.puzzleCode }} => {{ puzzle.numberOfSlots }} slots, {{ puzzle.numberOfColors }} colors</p>
+<p>Available Colors:</p>
+
+<div style='display:flex;width:300px;justify-content: space-between;padding: 0 20px;border-radius: 5px'>
+    {% for color in puzzle.availableColors %}
+        <div style='background-color: {{ color.name }};height:30px;width:30px;border-radius:50%;' class="slot">
+            &nbsp;
+        </div>
+    {% endfor %}
+</div>
+
+<div class="puzzle-board">
+    {% for slot in puzzle.mastermindCodeSlots %}
+        <div style='background-color: black;height:30px;width:30px;border-radius:50%;' class="slot">
+            &nbsp;
+        </div>
+    {% endfor %}
+</div>
+
+<p>ACTUAL CODE:</p>
+<div style='display:flex;width:300px;justify-content: space-between;padding: 0 20px;border-radius: 5px'>
     {% for slot in puzzle.mastermindCodeSlots %}
         <div style='background-color: {{ slot.color.name }};height:30px;width:30px;border-radius:50%;' class="slot">
             &nbsp;
@@ -15,7 +34,18 @@
         flex-direction: column;
     }
 
-    .slot:after {
+    .puzzle-board {
+        display:flex;
+        width:300px;
+        justify-content: space-between;
+        background: gray;
+        padding: 0 20px;
+        height: 400px;
+        border-radius: 5px;
+        margin: 20px 0;
+    }
+
+    .puzzle-board .slot:after {
         content: "";
         background-color: white;
         width: 10px;

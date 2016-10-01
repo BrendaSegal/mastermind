@@ -22,9 +22,28 @@ class Puzzle
     private $puzzleCode;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $numberOfColors;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $numberOfSlots;
+
+    /**
       * @ORM\OneToMany(targetEntity="MastermindCodeSlot", mappedBy="puzzle")
       */
     private $mastermindCodeSlots;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Color")
+     * @ORM\JoinTable(name="puzzle_colors",
+     *      joinColumns={@ORM\JoinColumn(name="puzzle_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="color_id", referencedColumnName="id")}
+     *      )
+     */
+    private $availableColors;
 
     /**
       * @ORM\ManyToOne(targetEntity="User")
@@ -187,5 +206,87 @@ class Puzzle
     public function getGeneratedBy()
     {
         return $this->generatedBy;
+    }
+
+    /**
+     * Add availableColor
+     *
+     * @param \MastermindBundle\Entity\Color $availableColor
+     *
+     * @return Puzzle
+     */
+    public function addAvailableColor(\MastermindBundle\Entity\Color $availableColor)
+    {
+        $this->availableColors[] = $availableColor;
+
+        return $this;
+    }
+
+    /**
+     * Remove availableColor
+     *
+     * @param \MastermindBundle\Entity\Color $availableColor
+     */
+    public function removeAvailableColor(\MastermindBundle\Entity\Color $availableColor)
+    {
+        $this->availableColors->removeElement($availableColor);
+    }
+
+    /**
+     * Get availableColors
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAvailableColors()
+    {
+        return $this->availableColors;
+    }
+
+    /**
+     * Set numberOfColors
+     *
+     * @param integer $numberOfColors
+     *
+     * @return Puzzle
+     */
+    public function setNumberOfColors($numberOfColors)
+    {
+        $this->numberOfColors = $numberOfColors;
+
+        return $this;
+    }
+
+    /**
+     * Get numberOfColors
+     *
+     * @return integer
+     */
+    public function getNumberOfColors()
+    {
+        return $this->numberOfColors;
+    }
+
+    /**
+     * Set numberOfSlots
+     *
+     * @param integer $numberOfSlots
+     *
+     * @return Puzzle
+     */
+    public function setNumberOfSlots($numberOfSlots)
+    {
+        $this->numberOfSlots = $numberOfSlots;
+
+        return $this;
+    }
+
+    /**
+     * Get numberOfSlots
+     *
+     * @return integer
+     */
+    public function getNumberOfSlots()
+    {
+        return $this->numberOfSlots;
     }
 }

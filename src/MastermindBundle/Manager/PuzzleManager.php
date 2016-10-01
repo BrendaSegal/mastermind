@@ -23,13 +23,11 @@ class PuzzleManager
         }
 
         $puzzle = new Puzzle();
+        $this->generateAvailableColors($puzzle, $numberOfColors);
+        $this->generateMasterCodePattern($puzzle, $numberOfSlots);
 
-        $masterCodePattern = $this->generateMasterCodePattern($puzzle, $numberOfSlots, $numberOfColors);
-
-        foreach ($masterCodePattern as $mc) {
-            $puzzle->addMastermindCodeSlot($mc);
-        }
-
+        $puzzle->setNumberOfColors($numberOfColors);
+        $puzzle->setNumberOfSlots($numberOfSlots);
         $puzzle->setCreatedAt(new \DateTime("now"));
         $puzzle->setUpdatedAt(new \DateTime("now"));
         $puzzle->setPuzzleCode($puzzleCode);
@@ -68,10 +66,8 @@ class PuzzleManager
         return $puzzle[0];
     }
 
-    private function generateMasterCodePattern($puzzle, $numberOfSlots, $numberOfColors)
+    private function generateAvailableColors($puzzle, $numberOfColors)
     {
-        $slotsToFill = array();
-
         $colorsArray = $this->entityManager->getRepository('MastermindBundle:Color')
             ->findAll();
 
@@ -83,19 +79,29 @@ class PuzzleManager
 
         $colorsArraySliced = array_slice($colorsArray, 0, $numberOfColors);
 
-        for ($i=0; $i<$numberOfSlots; $i++) {
-            $randomIndex = rand(0, count($colorsArraySliced)-1);
+        foreach ($colorsArraySliced as $color)
+        {
+            $puzzle->addAvailableColor($color);
+        }
+    }
 
-            $color = $colorsArraySliced[$randomIndex];
+    private function generateMasterCodePattern($puzzle, $numberOfSlots)
+    {
+        $slotsToFill = array();
+
+        $availableColors = $puzzle->getAvailableColors();
+
+        for ($i=0; $i<$numberOfSlots; $i++) {
+            $randomIndex = rand(0, count($availableColors)-1);
+
+            $color = $availableColors[$randomIndex];
 
             $masterCode = new MastermindCodeSlot();
             $masterCode->setColor($color);
             $masterCode->setPuzzle($puzzle);
 
-            array_push($slotsToFill, $masterCode);
-        }        
-
-        return $slotsToFill;
+            $puzzle->addMastermindCodeSlot($masterCode);
+        }
     }
 
     public function loadExistingPuzzleById()
